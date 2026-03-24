@@ -1,4 +1,4 @@
-# dotfiles
+# Confit
 
 Personal macOS dotfiles managed as a bare `~/.config` repo.
 
