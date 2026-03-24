@@ -1,0 +1,187 @@
+#!/usr/bin/env zsh
+
+THEMES_DIR="$HOME/.config/themes"
+CURRENT_THEME_FILE="$HOME/.config/.current-theme"
+GHOSTTY_CONFIG="$HOME/.config/ghostty/config"
+GHOSTTY_THEMES_DIR="/Applications/Ghostty.app/Contents/Resources/ghostty/themes"
+NVIM_THEME_STATE="$HOME/.local/share/nvim/theme-state"
+
+_theme_list() {
+  local current=""
+  [[ -f "$CURRENT_THEME_FILE" ]] && current="$(cat "$CURRENT_THEME_FILE")"
+  for f in "$THEMES_DIR"/*(.N); do
+    local name="${f:t}"
+    if [[ "$current" == "$name" ]]; then
+      echo "* $name"
+    else
+      echo "  $name"
+    fi
+  done
+}
+
+_theme_current() {
+  if [[ -f "$CURRENT_THEME_FILE" ]]; then
+    cat "$CURRENT_THEME_FILE"
+  else
+    echo "No theme set"
+  fi
+}
+
+_theme_apply() {
+  local name="$1"
+  local theme_file="$THEMES_DIR/$name"
+
+  if [[ ! -f "$theme_file" ]]; then
+    echo "Theme '$name' not found. Available themes:"
+    _theme_list
+    return 1
+  fi
+
+  # Parse theme file
+  local ghostty_theme nvim_theme tmux_flavour background
+  while IFS='=' read -r key value; do
+    case "$key" in
+      ghostty)     ghostty_theme="$value" ;;
+      nvim)        nvim_theme="$value" ;;
+      tmux_flavour) tmux_flavour="$value" ;;
+      background)  background="$value" ;;
+    esac
+  done < "$theme_file"
+
+  # Update ghostty config
+  if [[ -n "$ghostty_theme" ]]; then
+    if grep -q '^theme' "$GHOSTTY_CONFIG" 2>/dev/null; then
+      sed -i '' "s|^theme.*$|theme = ${ghostty_theme}|" "$GHOSTTY_CONFIG"
+    else
+      echo "theme = ${ghostty_theme}" >> "$GHOSTTY_CONFIG"
+    fi
+    pkill -USR2 ghostty 2>/dev/null
+  fi
+
+  # Write nvim theme state — fall back to catppuccin-mocha if no nvim mapping
+  mkdir -p "$(dirname "$NVIM_THEME_STATE")"
+  echo "colorscheme=${nvim_theme:-catppuccin-mocha}" > "$NVIM_THEME_STATE"
+  echo "background=${background:-dark}" >> "$NVIM_THEME_STATE"
+
+  # Notify running neovim instances
+  for addr in /tmp/nvim.*/0(N); do
+    nvim --server "$addr" --remote-expr "execute('ThemeReload')" 2>/dev/null
+  done
+
+  # Update tmux
+  if [[ -n "$tmux_flavour" ]] && command -v tmux &>/dev/null && [[ -n "$TMUX" || $(tmux list-sessions 2>/dev/null) ]]; then
+    tmux set -g @catppuccin_flavor "$tmux_flavour"
+    tmux source-file ~/.config/tmux/tmux.conf 2>/dev/null
+  fi
+
+  echo "$name" > "$CURRENT_THEME_FILE"
+  echo "Theme set to: $name"
+}
+
+_theme_search() {
+  if [[ ! -d "$GHOSTTY_THEMES_DIR" ]]; then
+    echo "Ghostty themes directory not found: $GHOSTTY_THEMES_DIR"
+    return 1
+  fi
+
+  # fzf over all Ghostty built-in themes
+  # Preview shows the theme file contents (colour palette entries)
+  local selected
+  selected=$(
+    ls "$GHOSTTY_THEMES_DIR" | fzf \
+      --prompt="Ghostty theme > " \
+      --preview="cat '${GHOSTTY_THEMES_DIR}/{}'" \
+      --preview-window=right:50%:wrap \
+      --bind="ctrl-/:toggle-preview" \
+      --header="Enter: add theme | Ctrl-/: toggle preview | Esc: cancel"
+  )
+
+  [[ -z "$selected" ]] && return 0
+
+  echo "Selected: $selected"
+  _theme_add_interactive "$selected"
+}
+
+_theme_add_interactive() {
+  # Optional: pre-fill ghostty name if called from search
+  local prefill_ghostty="${1:-}"
+
+  # --- Ghostty theme name ---
+  local ghostty_theme
+  if [[ -n "$prefill_ghostty" ]]; then
+    ghostty_theme="$prefill_ghostty"
+    echo "Ghostty theme: $ghostty_theme"
+  else
+    if [[ ! -d "$GHOSTTY_THEMES_DIR" ]]; then
+      echo "Ghostty themes directory not found: $GHOSTTY_THEMES_DIR"
+      return 1
+    fi
+    ghostty_theme=$(ls "$GHOSTTY_THEMES_DIR" | fzf --prompt="Ghostty theme > ")
+    [[ -z "$ghostty_theme" ]] && { echo "Cancelled."; return 0; }
+  fi
+
+  # --- Registry entry name (slug) ---
+  local slug
+  # Default slug: lowercase, spaces→hyphens
+  local default_slug="${ghostty_theme:l}"
+  default_slug="${default_slug// /-}"
+  echo -n "Registry name [$default_slug]: "
+  read -r slug
+  [[ -z "$slug" ]] && slug="$default_slug"
+
+  if [[ -f "$THEMES_DIR/$slug" ]]; then
+    echo -n "Theme '$slug' already exists. Overwrite? [y/N]: "
+    read -r confirm
+    [[ "${confirm:l}" != "y" ]] && { echo "Cancelled."; return 0; }
+  fi
+
+  # --- nvim colorscheme ---
+  local nvim_theme
+  echo -n "nvim colorscheme (leave blank to use catppuccin-mocha fallback): "
+  read -r nvim_theme
+
+  # --- tmux flavour ---
+  local tmux_flavour
+  echo -n "tmux catppuccin flavour [mocha/latte] (default: mocha): "
+  read -r tmux_flavour
+  [[ -z "$tmux_flavour" ]] && tmux_flavour="mocha"
+
+  # --- background ---
+  local background
+  echo -n "background [dark/light] (default: dark): "
+  read -r background
+  [[ -z "$background" ]] && background="dark"
+
+  # Write the theme file
+  {
+    echo "ghostty=${ghostty_theme}"
+    [[ -n "$nvim_theme" ]] && echo "nvim=${nvim_theme}"
+    echo "tmux_flavour=${tmux_flavour}"
+    echo "background=${background}"
+  } > "$THEMES_DIR/$slug"
+
+  echo "Theme '$slug' added."
+  echo -n "Apply it now? [Y/n]: "
+  read -r apply
+  [[ "${apply:l}" != "n" ]] && _theme_apply "$slug"
+}
+
+_usage() {
+  echo "Usage: theme <command> [name]"
+  echo ""
+  echo "Commands:"
+  echo "  theme <name>     Apply a theme"
+  echo "  theme list       List saved themes (* = current)"
+  echo "  theme current    Print current theme name"
+  echo "  theme search     Browse all 438 Ghostty built-in themes via fzf and add one"
+  echo "  theme add        Add a new theme interactively"
+}
+
+case "${1:-}" in
+  list)    _theme_list ;;
+  current) _theme_current ;;
+  search)  _theme_search ;;
+  add)     _theme_add_interactive ;;
+  "")      _usage; echo ""; _theme_list ;;
+  *)       _theme_apply "$1" ;;
+esac

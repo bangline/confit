@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONFIG_DIR="$HOME/.config"
+
+echo "==> Dotfiles bootstrap"
+
+# 1. Install Homebrew if missing
+if ! command -v brew &>/dev/null; then
+  echo "==> Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+else
+  echo "==> Homebrew already installed"
+fi
+
+# 2. Install packages from Brewfile
+echo "==> Running brew bundle..."
+brew bundle --file="$CONFIG_DIR/Brewfile"
+
+# 3. Write ~/.zshenv with ZDOTDIR
+if [[ ! -f "$HOME/.zshenv" ]] || ! grep -q 'ZDOTDIR' "$HOME/.zshenv"; then
+  echo "==> Writing ~/.zshenv"
+  echo 'export ZDOTDIR="$HOME/.config/zsh"' > "$HOME/.zshenv"
+else
+  echo "==> ~/.zshenv already configured"
+fi
+
+# 4. Clone TPM
+TPM_DIR="$CONFIG_DIR/tmux/plugins/tpm"
+if [[ ! -d "$TPM_DIR" ]]; then
+  echo "==> Cloning TPM..."
+  git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+else
+  echo "==> TPM already installed"
+fi
+
+# 5. Create local directories
+mkdir -p "$HOME/.local/share/zsh"
+mkdir -p "$HOME/.local/share/nvim"
+mkdir -p "$HOME/.local/bin"
+
+# 6. Set default theme
+if [[ ! -f "$CONFIG_DIR/.current-theme" ]]; then
+  echo "catppuccin-mocha" > "$CONFIG_DIR/.current-theme"
+fi
+"$CONFIG_DIR/bin/theme" catppuccin-mocha
+
+echo ""
+echo "==> Done! Next steps:"
+echo "   1. Restart your terminal (or run: exec zsh -l)"
+echo "   2. Open tmux and press prefix + I to install plugins"
+echo "   3. Run 'theme list' to see available themes"

@@ -1,0 +1,36 @@
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+[user]
+  name = Dave Kennedy
+  email = david@bangline.co.uk
+[alias]
+  co = checkout
+  c = commit --verbose
+  st = status -s
+  pf = push --force-with-lease
+  br = branch
+[core]
+  excludesfile = ~/.config/git/globalgitignore
+  trustctime = false
+  whitespace = space-before-tab,-ident-with-non-tab,trailing-space
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+[fetch]
+  prune = true
+[help]
+  autocorrect = 1
+[pull]
+  rebase = true
+[push]
+  followTags = true
+[rebase]
+  autosquash = true
+[tag]
+  firceSignAnnotated = true
+[init]
+  defaultBranch = main
