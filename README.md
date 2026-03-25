@@ -112,7 +112,16 @@ Config lives in `~/.config/zsh/` and is loaded via `ZDOTDIR`.
 | `.....` | `cd ../../../..` |
 | `br` | `bin/rails` |
 | `brt` | `bin/rails test` |
+| `brc` | `bin/rails console` |
+| `brr` | `bin/rails routes` |
+| `brdb` | `bin/rails db:migrate` |
+| `brdbs` | `bin/rails db:migrate:status` |
+| `brdbt` | `bin/rails db:test:prepare` |
+| `brg` | `bin/rails generate` |
 | `bd` | `bin/dev` |
+| `tst` | `cmdp bin/rails test` (re-runnable test pane) |
+| `be` | `bundle exec` |
+| `cop` | `bundle exec rubocop` |
 | `lzg` | `lazygit` |
 | `lzd` | `lazydocker` |
 | `zshconfig` | Open `.zshrc` in `$EDITOR` |
