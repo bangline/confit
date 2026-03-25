@@ -26,6 +26,7 @@ alias brdbt='bin/rails db:test:prepare'
 alias brg='bin/rails generate'
 alias bd='bin/dev'
 alias tst='cmdp bin/rails test'
+alias gsu='git submodule update'
 
 # Bundler
 alias be='bundle exec'
