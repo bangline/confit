@@ -26,3 +26,6 @@ zsh/.zcompdump*
 zsh/.zsh_sessions/*
 !zsh/.zsh_sessions/
 !zsh/.zsh_sessions/.keep
+!extensions/
+!extensions/zsh/
+!extensions/zsh/.keep

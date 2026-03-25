@@ -11,3 +11,9 @@ source "${ZDOTDIR}/directory.zsh"
 setopt AUTO_CD
 setopt INTERACTIVE_COMMENTS
 setopt MULTIOS
+
+# Machine-local extensions — mirror directory structure under ~/.config/extensions/
+for _ext_file in "${HOME}/.config/extensions/zsh"/*.zsh(N); do
+  source "$_ext_file"
+done
+unset _ext_file

@@ -14,6 +14,7 @@ Personal macOS dotfiles managed as a bare `~/.config` repo.
 | `themes/` | Theme definitions for the `theme` switcher |
 | `tmux/` | tmux config with [TPM](https://github.com/tmux-plugins/tpm) |
 | `zsh/` | Zsh config, aliases, functions, prompt, completions |
+| `extensions/` | Machine-local config extensions (not synced, gitignored by default) |
 | `Brewfile` | Homebrew packages and casks |
 
 ---
@@ -63,6 +64,21 @@ exec zsh -l
 **5. Install tmux plugins**
 
 Open tmux and press `prefix + I` (capital i) to fetch plugins via TPM.
+
+---
+
+## Machine-local extensions
+
+The `extensions/` directory mirrors the config structure and is for machine-specific config that should not be shared across machines. Files placed here are sourced after the main config on startup.
+
+For example, to add machine-specific aliases:
+
+```sh
+# ~/.config/extensions/zsh/aliases.zsh
+alias vpn='sudo openconnect ...'
+```
+
+Any `.zsh` files placed in `extensions/zsh/` are automatically sourced at the end of `.zshrc`. The directory itself is tracked in git (via `extensions/zsh/.keep`) but its contents are gitignored, so machine-local files are never accidentally committed.
 
 ---
 
