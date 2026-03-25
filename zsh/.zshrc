@@ -5,6 +5,7 @@ source "${ZDOTDIR}/prompt.zsh"
 source "${ZDOTDIR}/completion.zsh"
 source "${ZDOTDIR}/history.zsh"
 source "${ZDOTDIR}/aliases.zsh"
+source "${ZDOTDIR}/functions.zsh"
 source "${ZDOTDIR}/directory.zsh"
 
 setopt AUTO_CD
