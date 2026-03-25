@@ -13,8 +13,10 @@ Personal macOS dotfiles managed as a bare `~/.config` repo.
 | `nvim/` | Neovim config (LazyVim-based) |
 | `themes/` | Theme definitions for the `theme` switcher |
 | `tmux/` | tmux config with [TPM](https://github.com/tmux-plugins/tpm) |
-| `zsh/` | Zsh config, aliases, prompt, completions |
+| `zsh/` | Zsh config, aliases, functions, prompt, completions |
 | `Brewfile` | Homebrew packages and casks |
+
+---
 
 ## Installation
 
@@ -59,7 +61,7 @@ Open tmux and press `prefix + I` (capital i) to fetch plugins via TPM.
 
 ## Themes
 
-A `theme` command is available to switch the colour scheme across Ghostty, Neovim, and tmux simultaneously.
+A `theme` command switches the colour scheme across Ghostty, Neovim, and tmux simultaneously.
 
 ```sh
 theme list            # list available themes (* = active)
@@ -73,16 +75,84 @@ Available themes: `catppuccin-latte`, `catppuccin-mocha`, `dracula`, `rose-pine`
 
 ---
 
-## Zsh structure
+## Zsh
 
-Zsh config lives in `~/.config/zsh/` and is loaded via `ZDOTDIR`:
+Config lives in `~/.config/zsh/` and is loaded via `ZDOTDIR`.
+
+### Files
 
 | File | Purpose |
 |------|---------|
-| `.zshrc` | Main config, sources the files below |
-| `.zprofile` | Login shell env (mise, paths) |
+| `.zshrc` | Main entry point, sources all files below |
+| `.zprofile` | Login shell env (Homebrew, mise, PATH) |
 | `aliases.zsh` | Shell aliases |
+| `functions.zsh` | Shell functions |
 | `completion.zsh` | Completion setup |
 | `directory.zsh` | Directory navigation options |
 | `history.zsh` | History settings |
-| `prompt.zsh` | Prompt config |
+| `prompt.zsh` | Custom git-aware prompt |
+
+### Aliases
+
+| Alias | Command |
+|-------|---------|
+| `ll` | `ls -lh` |
+| `la` | `ls -lAh` |
+| `lt` | `ls -lhtr` |
+| `..` | `cd ..` |
+| `...` | `cd ../..` |
+| `....` | `cd ../../..` |
+| `.....` | `cd ../../../..` |
+| `lg` | `lazygit` |
+| `zshconfig` | Open `.zshrc` in `$EDITOR` |
+| `zshreload` | Re-source `.zshrc` |
+
+### Functions
+
+#### `cmdp`
+
+Runs a command in a persistent re-runnable pane. Useful as a dedicated test/build pane in tmux.
+
+```sh
+cmdp bin/rails test
+cmdp make build
+cmdp npm test
+```
+
+After the command exits, the output and exit status are shown. Press **Enter** to re-run, **Esc** to quit.
+
+### Prompt
+
+Custom git-aware prompt showing:
+- Arrow in green (success) or red (failure) based on last exit code
+- Current directory
+- Git branch (red) with dirty indicator (yellow ✗) when there are uncommitted changes
+
+### History
+
+50,000 entries stored in `~/.local/share/zsh/history`, shared across sessions. Duplicates, blank-only entries, and lines prefixed with a space are suppressed. [fzf](https://github.com/junegunn/fzf) is integrated for fuzzy history search (`Ctrl-R`).
+
+### Completion
+
+- Case-insensitive matching
+- Menu selection with arrow keys
+- Coloured output using `LS_COLORS`
+- Grouped results with descriptions
+- Completion cache regenerated once per day
+
+---
+
+## tmux
+
+Config in `~/.config/tmux/tmux.conf`. Prefix is `Ctrl-a`.
+
+| Binding | Action |
+|---------|--------|
+| `prefix + \|` | Split pane horizontally |
+| `prefix + -` | Split pane vertically |
+| `prefix + h/j/k/l` | Navigate panes (vim-style) |
+| `prefix + c` | New window in current path |
+| `prefix + r` | Reload tmux config |
+| `prefix + I` | Install TPM plugins |
+
+Plugins: [tmux-sensible](https://github.com/tmux-plugins/tmux-sensible), [tmux-yank](https://github.com/tmux-plugins/tmux-yank), [catppuccin/tmux](https://github.com/catppuccin/tmux)
