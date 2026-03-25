@@ -44,3 +44,12 @@ Thumbs.db
 *.scratch*
 *.gist*
 tags
+
+# Version Managers #
+####################
+mise.toml
+
+# AI #
+######
+.cursor/plans
+AGENTS.md
