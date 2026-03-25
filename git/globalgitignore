@@ -28,7 +28,7 @@
 ######################
 *.log
 
-# Commom directories #
+# Common directories #
 ######################
 node_modules
 tmp
