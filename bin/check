@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONFIG_DIR="$HOME/.config"
+PASS="✓"
+FAIL="✗"
+FIX=0
+
+# Parse flags
+for arg in "$@"; do
+  [[ "$arg" == "--fix" ]] && FIX=1
+done
+
+ok()  { echo "  $PASS $1"; }
+fail() { echo "  $FAIL $1"; }
+
+check_or_fix() {
+  local label="$1"
+  local check_cmd="$2"
+  local fix_cmd="${3:-}"
+
+  if eval "$check_cmd" &>/dev/null; then
+    ok "$label"
+  else
+    fail "$label"
+    if [[ $FIX -eq 1 && -n "$fix_cmd" ]]; then
+      echo "     --> fixing..."
+      eval "$fix_cmd"
+    fi
+  fi
+}
+
+echo ""
+echo "==> Homebrew"
+check_or_fix "brew installed" \
+  "command -v brew" \
+  '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && eval "$(/opt/homebrew/bin/brew shellenv)"'
+
+echo ""
+echo "==> Brew packages"
+check_or_fix "tmux"        "command -v tmux"        "brew install tmux"
+check_or_fix "fzf"         "command -v fzf"         "brew install fzf"
+check_or_fix "ripgrep"     "command -v rg"          "brew install ripgrep"
+check_or_fix "fd"          "command -v fd"          "brew install fd"
+check_or_fix "neovim"      "command -v nvim"        "brew install neovim"
+check_or_fix "lazygit"     "command -v lazygit"     "brew install lazygit"
+check_or_fix "lazydocker"  "command -v lazydocker"  "brew install lazydocker"
+check_or_fix "gh"          "command -v gh"          "brew install gh"
+check_or_fix "mise"        "command -v mise"        "brew install mise"
+
+echo ""
+echo "==> Casks"
+check_or_fix "docker"      "command -v docker"      "brew install --cask docker"
+check_or_fix "ghostty"     "[[ -d /Applications/Ghostty.app ]]" "brew install --cask ghostty"
+
+echo ""
+echo "==> Shell"
+check_or_fix "ZDOTDIR set in ~/.zshenv" \
+  "grep -q ZDOTDIR '$HOME/.zshenv'" \
+  "echo 'export ZDOTDIR=\"\$HOME/.config/zsh\"' > '$HOME/.zshenv'"
+
+echo ""
+echo "==> tmux"
+check_or_fix "TPM installed" \
+  "[[ -d '$CONFIG_DIR/tmux/plugins/tpm' ]]" \
+  "git clone https://github.com/tmux-plugins/tpm '$CONFIG_DIR/tmux/plugins/tpm'"
+
+echo ""
+echo "==> Local directories"
+check_or_fix "~/.local/share/zsh"  "[[ -d '$HOME/.local/share/zsh' ]]"  "mkdir -p '$HOME/.local/share/zsh'"
+check_or_fix "~/.local/share/nvim" "[[ -d '$HOME/.local/share/nvim' ]]" "mkdir -p '$HOME/.local/share/nvim'"
+check_or_fix "~/.local/bin"        "[[ -d '$HOME/.local/bin' ]]"        "mkdir -p '$HOME/.local/bin'"
+
+echo ""
+echo "==> Theme"
+check_or_fix "current theme set" \
+  "[[ -f '$CONFIG_DIR/.current-theme' ]]" \
+  "echo 'catppuccin-mocha' > '$CONFIG_DIR/.current-theme'"
+
+echo ""
+if [[ $FIX -eq 0 ]]; then
+  echo "Run with --fix to install and configure anything missing."
+fi

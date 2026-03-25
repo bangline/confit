@@ -6,7 +6,7 @@ Personal macOS dotfiles managed as a bare `~/.config` repo.
 
 | Directory | Tool |
 |-----------|------|
-| `bin/` | Helper scripts (`install`, `theme`) |
+| `bin/` | Helper scripts (`install`, `check`, `theme`) |
 | `ghostty/` | [Ghostty](https://ghostty.org) terminal config |
 | `git/` | Git config and global ignore |
 | `mise/` | [mise](https://mise.jdx.dev) runtime version manager |
@@ -53,7 +53,14 @@ This will:
 exec zsh -l
 ```
 
-**4. Install tmux plugins**
+**4. Verify everything is installed**
+
+```sh
+~/.config/bin/check         # audit only
+~/.config/bin/check --fix   # install and configure anything missing
+```
+
+**5. Install tmux plugins**
 
 Open tmux and press `prefix + I` (capital i) to fetch plugins via TPM.
 
