@@ -31,6 +31,6 @@
 [rebase]
   autosquash = true
 [tag]
-  firceSignAnnotated = true
+  forceSignAnnotated = true
 [init]
   defaultBranch = main
