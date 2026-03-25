@@ -15,6 +15,11 @@ alias ..='cd ..'
 # Grep
 alias grep='grep --color=auto'
 
+# Rails / dev
+alias br='bin/rails'
+alias brt='bin/rails test'
+alias bd='bin/dev'
+
 # lazygit / lazydocker
 alias lzg='lazygit'
 alias lzd='lazydocker'

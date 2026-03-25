@@ -110,6 +110,9 @@ Config lives in `~/.config/zsh/` and is loaded via `ZDOTDIR`.
 | `...` | `cd ../..` |
 | `....` | `cd ../../..` |
 | `.....` | `cd ../../../..` |
+| `br` | `bin/rails` |
+| `brt` | `bin/rails test` |
+| `bd` | `bin/dev` |
 | `lzg` | `lazygit` |
 | `lzd` | `lazydocker` |
 | `zshconfig` | Open `.zshrc` in `$EDITOR` |
