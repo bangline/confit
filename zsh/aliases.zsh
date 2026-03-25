@@ -15,8 +15,9 @@ alias ..='cd ..'
 # Grep
 alias grep='grep --color=auto'
 
-# lazygit
-alias lg='lazygit'
+# lazygit / lazydocker
+alias lzg='lazygit'
+alias lzd='lazydocker'
 
 # zsh config
 alias zshconfig='$EDITOR ${ZDOTDIR}/.zshrc'

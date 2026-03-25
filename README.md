@@ -103,7 +103,8 @@ Config lives in `~/.config/zsh/` and is loaded via `ZDOTDIR`.
 | `...` | `cd ../..` |
 | `....` | `cd ../../..` |
 | `.....` | `cd ../../../..` |
-| `lg` | `lazygit` |
+| `lzg` | `lazygit` |
+| `lzd` | `lazydocker` |
 | `zshconfig` | Open `.zshrc` in `$EDITOR` |
 | `zshreload` | Re-source `.zshrc` |
 
