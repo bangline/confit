@@ -27,9 +27,23 @@
     "light": "One Light",
     "dark": "One Dark",
   },
+  "format_on_save": "on",
+  "inlay_hints": {
+    "enabled": true,
+    "show_type_hints": true,
+    "show_parameter_hints": true,
+    "show_other_hints": true,
+    "edit_debounce_ms": 700,
+    "scroll_debounce_ms": 50,
+  },
   "languages": {
     "Ruby": {
       "language_servers": ["ruby-lsp"],
+      "formatter": {
+        "language_server": {
+          "name": "ruby-lsp",
+        },
+      },
     },
     "HTML": {
       "language_servers": ["tailwindcss-language-server", "..."],
