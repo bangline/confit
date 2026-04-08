@@ -6,6 +6,13 @@ BASE="$ZED_DIR/settings.base.json"
 OVERRIDES="$ZED_DIR/overrides.json"
 OUTPUT="$ZED_DIR/settings.json"
 
+for cmd in jq zed; do
+  if ! command -v "$cmd" &>/dev/null; then
+    echo "Error: '$cmd' is not installed or not in PATH" >&2
+    exit 1
+  fi
+done
+
 if [[ ! -f "$BASE" ]]; then
   echo "Error: base settings not found at $BASE" >&2
   exit 1

@@ -48,6 +48,9 @@ check_or_fix "lazydocker"  "command -v lazydocker"  "brew install lazydocker"
 check_or_fix "gh"          "command -v gh"          "brew install gh"
 check_or_fix "mise"        "command -v mise"        "brew install mise"
 
+check_or_fix "jq"          "command -v jq"          "brew install jq"
+check_or_fix "zed"         "command -v zed"         "brew install --cask zed"
+
 echo ""
 echo "==> Casks"
 check_or_fix "docker"      "command -v docker"      "brew install --cask docker"
@@ -76,6 +79,25 @@ echo "==> Theme"
 check_or_fix "current theme set" \
   "[[ -f '$CONFIG_DIR/.current-theme' ]]" \
   "echo 'catppuccin-mocha' > '$CONFIG_DIR/.current-theme'"
+
+echo ""
+echo "==> Dotfiles repo"
+if git -C "$CONFIG_DIR" fetch --quiet origin 2>/dev/null; then
+  LOCAL=$(git -C "$CONFIG_DIR" rev-parse HEAD)
+  REMOTE=$(git -C "$CONFIG_DIR" rev-parse origin/main)
+  BEHIND=$(git -C "$CONFIG_DIR" rev-list --count HEAD..origin/main)
+  if [[ "$BEHIND" -eq 0 ]]; then
+    ok "up to date with remote"
+  else
+    fail "$BEHIND commit(s) behind origin/main"
+    if [[ $FIX -eq 1 ]]; then
+      echo "     --> pulling..."
+      git -C "$CONFIG_DIR" pull --ff-only origin main
+    fi
+  fi
+else
+  fail "could not reach remote"
+fi
 
 echo ""
 if [[ $FIX -eq 0 ]]; then
