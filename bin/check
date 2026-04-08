@@ -52,6 +52,17 @@ check_or_fix "jq"          "command -v jq"          "brew install jq"
 check_or_fix "zed"         "command -v zed"         "brew install --cask zed"
 
 echo ""
+echo "==> Mise tools"
+check_or_fix "ruby-lsp"      "mise which ruby-lsp &>/dev/null"      "mise install gem:ruby-lsp && mise upgrade gem:ruby-lsp"
+check_or_fix "rubocop"       "mise which rubocop &>/dev/null"       "mise install gem:rubocop && mise upgrade gem:rubocop"
+check_or_fix "erb-formatter" "mise which erb-formatter &>/dev/null" "mise install gem:erb-formatter && mise upgrade gem:erb-formatter"
+check_or_fix "prettier"      "mise which prettier &>/dev/null"      "mise install npm:prettier && mise upgrade npm:prettier"
+if [[ $FIX -eq 1 ]]; then
+  echo "  --> upgrading mise tools..."
+  mise upgrade gem:ruby-lsp gem:rubocop gem:erb-formatter npm:prettier
+fi
+
+echo ""
 echo "==> Casks"
 check_or_fix "docker"      "command -v docker"      "brew install --cask docker"
 check_or_fix "ghostty"     "[[ -d /Applications/Ghostty.app ]]" "brew install --cask ghostty"
