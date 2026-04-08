@@ -7,6 +7,7 @@ source "${ZDOTDIR}/history.zsh"
 source "${ZDOTDIR}/aliases.zsh"
 source "${ZDOTDIR}/functions.zsh"
 source "${ZDOTDIR}/directory.zsh"
+source "${ZDOTDIR}/dotfiles-update.zsh"
 
 setopt AUTO_CD
 setopt INTERACTIVE_COMMENTS
