@@ -49,7 +49,7 @@ check_or_fix "gh"          "command -v gh"          "brew install gh"
 check_or_fix "mise"        "command -v mise"        "brew install mise"
 
 check_or_fix "jq"          "command -v jq"          "brew install jq"
-check_or_fix "zed"         "command -v zed"         "brew install --cask zed"
+check_or_fix "zed"         "[[ -d /Applications/Zed.app ]]"  "brew install --cask zed"
 
 echo ""
 echo "==> Mise tools"
