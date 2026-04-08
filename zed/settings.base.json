@@ -31,7 +31,11 @@
     "Ruby": {
       "language_servers": ["ruby-lsp"],
     },
+    "HTML": {
+      "language_servers": ["tailwindcss-language-server", "..."],
+    },
     "HTML+ERB": {
+      "language_servers": ["tailwindcss-language-server", "..."],
       "formatter": {
         "external": {
           "command": "erb-formatter",
@@ -39,12 +43,25 @@
         },
       },
     },
+    "CSS": {
+      "language_servers": ["tailwindcss-language-server", "..."],
+    },
+    "JavaScript": {
+      "language_servers": ["tailwindcss-language-server", "..."],
+    },
   },
   "lsp": {
     "tailwindcss-language-server": {
       "settings": {
-        "experimental": {
-          "classRegex": ["\\bclass:\\s*['\"]([^'\"]*)['\"]"],
+        "tailwindCSS": {
+          "configFiles": [
+            "tailwind.config.js",
+            "tailwind.config.ts",
+            "config/tailwind.config.js",
+          ],
+          "experimental": {
+            "classRegex": ["\\bclass:\\s*['\"]([^'\"]*)['\"]"],
+          },
         },
       },
     },
