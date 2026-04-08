@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ZED_DIR="$HOME/.config/zed"
+BASE="$ZED_DIR/settings.base.json"
+OVERRIDES="$ZED_DIR/overrides.json"
+OUTPUT="$ZED_DIR/settings.json"
+
+if [[ ! -f "$BASE" ]]; then
+  echo "Error: base settings not found at $BASE" >&2
+  exit 1
+fi
+
+strip_json5() {
+  # Remove single-line comments and trailing commas before ] or }
+  sed \
+    -e 's|//.*||' \
+    -e '/^[[:space:]]*$/d' \
+    "$1" | \
+  python3 -c "
+import sys, re
+data = sys.stdin.read()
+# Remove trailing commas before ] or }
+data = re.sub(r',(\s*[}\]])', r'\1', data)
+print(data)
+"
+}
+
+base_json=$(strip_json5 "$BASE")
+
+if [[ -f "$OVERRIDES" ]]; then
+  overrides_json=$(strip_json5 "$OVERRIDES")
+  merged=$(echo "$base_json" | jq --argjson overrides "$overrides_json" '. * $overrides')
+else
+  merged="$base_json"
+fi
+
+echo "$merged" > "$OUTPUT"
+echo "Merged $BASE + $OVERRIDES -> $OUTPUT"

@@ -29,3 +29,11 @@ zsh/.zsh_sessions/*
 !extensions/
 !extensions/zsh/
 !extensions/zsh/.keep
+!zed/
+!zed/settings.base.json
+!zed/prompts/
+!zed/prompts/**
+zed/prompts/*.mdb/
+zed/prompts/*.mdb/**
+!zed/themes/
+!zed/themes/**

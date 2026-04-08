@@ -6,7 +6,7 @@ Personal macOS dotfiles managed as a bare `~/.config` repo.
 
 | Directory | Tool |
 |-----------|------|
-| `bin/` | Helper scripts (`install`, `check`, `theme`) |
+| `bin/` | Helper scripts (`install`, `check`, `theme`, `zed-merge`) |
 | `ghostty/` | [Ghostty](https://ghostty.org) terminal config |
 | `git/` | Git config and global ignore |
 | `mise/` | [mise](https://mise.jdx.dev) runtime version manager |
@@ -14,6 +14,7 @@ Personal macOS dotfiles managed as a bare `~/.config` repo.
 | `themes/` | Theme definitions for the `theme` switcher |
 | `tmux/` | tmux config with [TPM](https://github.com/tmux-plugins/tpm) |
 | `zsh/` | Zsh config, aliases, functions, prompt, completions |
+| `zed/` | [Zed](https://zed.dev) editor config (`settings.base.json`, prompts, themes) |
 | `extensions/` | Machine-local config extensions (not synced, gitignored by default) |
 | `Brewfile` | Homebrew packages and casks |
 
@@ -175,6 +176,59 @@ Custom git-aware prompt showing:
 - Coloured output using `LS_COLORS`
 - Grouped results with descriptions
 - Completion cache regenerated once per day
+
+---
+
+## Zed
+
+Config lives in `~/.config/zed/`. Zed only reads a single `settings.json`, so shared and machine-specific settings are kept separate and merged by `bin/zed-merge`.
+
+| File | Purpose | Tracked |
+|------|---------|---------|
+| `settings.base.json` | Shared settings, synced across machines | Yes |
+| `overrides.json` | Machine-specific overrides, stays local | No |
+| `settings.json` | Merged output, read by Zed | No |
+
+### Setup
+
+After cloning on a new machine, create a local overrides file:
+
+```sh
+touch ~/.config/zed/overrides.json
+# add any machine-specific settings (or leave as {})
+```
+
+Then run the merge script whenever `settings.base.json` changes:
+
+```sh
+~/.config/bin/zed-merge
+```
+
+### Machine-specific overrides
+
+`overrides.json` is deep-merged on top of `settings.base.json`. Any key present in overrides takes precedence.
+
+**Disable Zed's built-in inline code suggestions** (e.g. on a work machine with restrictions):
+
+```json
+{
+  "features": {
+    "inline_completion_provider": "none"
+  }
+}
+```
+
+**Use a different theme:**
+
+```json
+{
+  "theme": {
+    "mode": "dark",
+    "light": "Solarized Light",
+    "dark": "Solarized Dark"
+  }
+}
+```
 
 ---
 
