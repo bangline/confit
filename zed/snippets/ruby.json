@@ -1,0 +1,7 @@
+{
+  "New test": {
+    "prefix": "tst",
+    "body": ["test \"$1\" do", "\t\t$0", "end"],
+    "description": "Creates a new unit test"
+  }
+}
