@@ -1,10 +1,10 @@
 [tools]
-node = "20"
-ruby = "3.4"
+node = "latest"
+ruby = "latest"
 "gem:rubocop" = "latest"
 "gem:ruby-lsp" = "latest"
 "gem:erb-formatter" = "latest"
 "npm:prettier" = "latest"
 
 [settings]
-idiomatic_version_file_enable_tools = ["ruby"]
+idiomatic_version_file_enable_tools = ["ruby", "node"]
