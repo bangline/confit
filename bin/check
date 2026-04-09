@@ -47,7 +47,7 @@ check_or_fix "lazygit"     "command -v lazygit"     "brew install lazygit"
 check_or_fix "lazydocker"  "command -v lazydocker"  "brew install lazydocker"
 check_or_fix "gh"          "command -v gh"          "brew install gh"
 check_or_fix "mise"        "command -v mise"        "brew install mise"
-
+check_or_fix "shellcheck"  "command -v shellcheck"  "brew install shellcheck"
 check_or_fix "jq"          "command -v jq"          "brew install jq"
 check_or_fix "zed"         "[[ -d /Applications/Zed.app ]]"  "brew install --cask zed"
 
