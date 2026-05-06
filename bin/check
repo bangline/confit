@@ -50,6 +50,7 @@ check_or_fix "mise"        "command -v mise"        "brew install mise"
 check_or_fix "shellcheck"  "command -v shellcheck"  "brew install shellcheck"
 check_or_fix "jq"          "command -v jq"          "brew install jq"
 check_or_fix "zed"         "[[ -d /Applications/Zed.app ]]"  "brew install --cask zed"
+check_or_fix "ghui"         "which ghui"  "brew install kitlangton/tap/ghui"
 
 echo ""
 echo "==> Mise tools"

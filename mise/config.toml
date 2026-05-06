@@ -1,13 +1,11 @@
 [tools]
 node = "latest"
 ruby = "latest"
-bun = "latest"
 "gem:rubocop" = "latest"
 "gem:ruby-lsp" = "latest"
 "gem:erb-formatter" = "latest"
 "npm:prettier" = "latest"
 "npm:yarn" = "latest"
-"npm:@kitlangton/ghui" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby", "node"]
