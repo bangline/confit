@@ -53,3 +53,5 @@ mise.toml
 ######
 .cursor/plans
 AGENTS.md
+
+**/.claude/settings.local.json

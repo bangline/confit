@@ -1,4 +1,4 @@
-export PATH="$HOME/.local/bin:$HOME/.config/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.config/bin:$HOME/.cargo/bin:$PATH"
 eval "$(/opt/homebrew/bin/mise activate zsh)"
 
 source "${ZDOTDIR}/prompt.zsh"
